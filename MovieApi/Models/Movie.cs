@@ -8,6 +8,7 @@
         public string Genre { get; set; } = null!;
         public int Duration { get; set; }
         public MovieDetails MovieDetails { get; set; } = null!; // Navigation property
-        public ICollection<Movie> Movies { get; set; } = null!;
+        public ICollection<Review> Reviews { get; set; } = new List<Review>(); // 1:N - Movie:Review
+        public ICollection<Actor> Actors { get; set; } = new List<Actor>(); // N:M - Movie:Actor
     }
 }

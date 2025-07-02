@@ -10,10 +10,9 @@ namespace MovieApi.Models
         public string Comment { get; set; } = null!;
         [Range(1, 5)]
         public int Rating { get; set; }
-        public int MovieId { get; set; } // Foreign key
+        public int MovieId { get; set; } // Foreign key. 1:N - Movie:Review
 
         [JsonIgnore] // Prevents circular reference recursion
         public Movie Movie { get; set; } = null!; // Navigation property
-
     }
 }
