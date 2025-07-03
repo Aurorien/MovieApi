@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace MovieApi.Models
+namespace MovieApi.Models.Entities
 {
     public class Review
     {

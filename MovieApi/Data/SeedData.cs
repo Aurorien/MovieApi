@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using Microsoft.EntityFrameworkCore;
-using MovieApi.Models;
+using MovieApi.Models.Entities;
 using System.Globalization;
 
 namespace MovieApi.Data
