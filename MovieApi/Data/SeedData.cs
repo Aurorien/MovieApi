@@ -18,6 +18,8 @@ namespace MovieApi.Data
             var movies = GenerateMovies(20);
             await context.AddRangeAsync(movies);
 
+            await context.SaveChangesAsync();
+
             AssignActorsToMovies(movies, actors);
 
             var reviews = GenerateReviews(movies, 50);
@@ -49,6 +51,7 @@ namespace MovieApi.Data
 
             for (int i = 0; i < numberOfMovies; i++)
             {
+                //var title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(faker.Commerce.ProductName());
                 var title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(faker.Company.CompanyName());
                 var year = faker.Random.Int(1878, DateTime.Now.Year);
                 var genre = GetRandomMovieGenre();

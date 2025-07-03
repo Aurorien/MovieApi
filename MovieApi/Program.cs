@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
+using MovieApi.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieApiContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MovieApiContext") ?? throw new InvalidOperationException("Connection string 'MovieApiContext' not found.")));
@@ -16,6 +17,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    await app.SeedDataAsync();
 }
 
 app.UseHttpsRedirection();
