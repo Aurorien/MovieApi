@@ -53,7 +53,7 @@ namespace MovieApi.Data
             {
                 //var title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(faker.Commerce.ProductName());
                 var title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(faker.Company.CompanyName());
-                var year = faker.Random.Int(1878, DateTime.Now.Year);
+                var year = faker.Random.Int(1878, 2100);
                 var genre = GetRandomMovieGenre();
                 var durationInMinutes = faker.Random.Int(1, 55000);
 

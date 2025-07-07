@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace MovieApi.Models.Entities
 {
@@ -8,7 +7,6 @@ namespace MovieApi.Models.Entities
         public int Id { get; set; }
         public string ReviewerName { get; set; } = null!;
         public string Comment { get; set; } = null!;
-        [Range(1, 5)]
         public int Rating { get; set; }
         public int MovieId { get; set; } // Foreign key. 1:N - Movie:Review
 
