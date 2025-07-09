@@ -23,13 +23,15 @@ namespace MovieApi.Controllers
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews()
         {
 
-            var reviewDtos = await _context.Review.Select(r => new ReviewDto
-            {
-                Id = r.Id,
-                ReviewerName = r.ReviewerName,
-                Comment = r.Comment,
-                Rating = r.Rating
-            }).ToListAsync();
+            var reviewDtos = await _context.Review
+                .Select(r => new ReviewDto
+                {
+                    Id = r.Id,
+                    ReviewerName = r.ReviewerName,
+                    Comment = r.Comment,
+                    Rating = r.Rating
+                })
+                .ToListAsync();
 
 
             return Ok(reviewDtos);
@@ -40,8 +42,8 @@ namespace MovieApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<ReviewDto>> GetReview([FromRoute] Guid id)
         {
-            var review = await _context.Review.
-                Where(r => r.Id == id)
+            var reviewDto = await _context.Review
+                .Where(r => r.Id == id)
                 .Select(r => new ReviewDto
                 {
                     Id = r.Id,
@@ -52,19 +54,19 @@ namespace MovieApi.Controllers
                 .FirstOrDefaultAsync();
 
 
-            if (review == null)
+            if (reviewDto == null)
             {
                 return NotFound();
             }
 
-            return Ok(review);
+            return Ok(reviewDto);
         }
 
 
         // POST: api/reviews
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ReviewDto>> PostReview(ReviewCreateDto createReviewDto)
+        public async Task<ActionResult<ReviewDto>> PostReview([FromBody] ReviewCreateDto createReviewDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -88,8 +90,7 @@ namespace MovieApi.Controllers
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> PutReview([FromRoute] Guid id, [FromBody] ReviewPutUpdateDto updateReviewDto)
         {
-            var review = await _context.Review
-                .FirstOrDefaultAsync(r => r.Id == id);
+            var review = await _context.Review.FirstOrDefaultAsync(r => r.Id == id);
 
             if (review is null) return NotFound();
 
