@@ -4,7 +4,7 @@ namespace MovieApi.Models.DTOs
 {
     public class ReviewDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string ReviewerName { get; set; } = null!;
         [Required]
