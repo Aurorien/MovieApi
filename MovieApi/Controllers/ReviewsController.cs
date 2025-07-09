@@ -23,7 +23,7 @@ namespace MovieApi.Controllers
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews()
         {
 
-            var dtos = await _context.Review.Select(r => new ReviewDto
+            var reviewDtos = await _context.Review.Select(r => new ReviewDto
             {
                 Id = r.Id,
                 ReviewerName = r.ReviewerName,
@@ -32,7 +32,7 @@ namespace MovieApi.Controllers
             }).ToListAsync();
 
 
-            return Ok(dtos);
+            return Ok(reviewDtos);
         }
 
 
