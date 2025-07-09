@@ -30,6 +30,7 @@ namespace MovieApi.Controllers
                     Year = m.Year,
                     Genre = m.Genre,
                     DurationInMinutes = m.DurationInMinutes,
+                    MovieDetailsLanguage = m.MovieDetails.Language
                 })
                 .ToListAsync();
 
@@ -50,6 +51,7 @@ namespace MovieApi.Controllers
                     Year = m.Year,
                     Genre = m.Genre,
                     DurationInMinutes = m.DurationInMinutes,
+                    MovieDetailsLanguage = m.MovieDetails.Language
                 })
                 .FirstOrDefaultAsync();
 
@@ -91,20 +93,37 @@ namespace MovieApi.Controllers
         // POST: api/movies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie([FromBody] MovieCreateDto createMovieDto)
+        public async Task<ActionResult<MovieDto>> PostMovie([FromBody] MovieCreateDto createMovieDto)
         {
             var movie = new Movie
             {
                 Title = createMovieDto.Title,
                 Year = createMovieDto.Year,
                 Genre = createMovieDto.Genre,
-                DurationInMinutes = createMovieDto.DurationInMinutes
+                DurationInMinutes = createMovieDto.DurationInMinutes,
+                MovieDetails = new MovieDetails
+                {
+                    Synopsis = createMovieDto.Synopsis,
+                    Language = createMovieDto.Language,
+                    Budget = createMovieDto.Budget
+                }
+
             };
 
             _context.Movie.Add(movie);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
+            var movieDto = new MovieDto
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Year = movie.Year,
+                Genre = movie.Genre,
+                DurationInMinutes = movie.DurationInMinutes,
+                MovieDetailsLanguage = movie.MovieDetails.Language
+            };
+
+            return CreatedAtAction("GetMovie", new { id = movie.Id }, movieDto);
         }
 
 

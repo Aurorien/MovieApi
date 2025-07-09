@@ -10,6 +10,7 @@ namespace MovieApi.Models.DTOs.MovieDtos
         public int Year { get; set; }
         public string Genre { get; set; } = null!;
         public int DurationInMinutes { get; set; }
+        public string MovieDetailsLanguage { get; set; } = null!;
         public IEnumerable<ActorDto> Actors { get; set; } = Enumerable.Empty<ActorDto>();
         public IEnumerable<ReviewDto> Reviews { get; set; } = Enumerable.Empty<ReviewDto>();
     }
