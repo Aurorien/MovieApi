@@ -1,0 +1,142 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MovieApi.Data;
+using MovieApi.Models.DTOs.ReviewDtos;
+using MovieApi.Models.Entities;
+
+namespace MovieApi.Controllers
+{
+    [Route("api/reviews")]
+    [ApiController]
+    public class ReviewsController : ControllerBase
+    {
+        private readonly MovieApiContext _context;
+
+        public ReviewsController(MovieApiContext context)
+        {
+            _context = context;
+        }
+
+
+        // GET: api/Reviews
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews()
+        {
+
+            var dtos = await _context.Review.Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                ReviewerName = r.ReviewerName,
+                Comment = r.Comment,
+                Rating = r.Rating
+            }).ToListAsync();
+
+
+            return Ok(dtos);
+        }
+
+
+        // GET: api/Reviews/5
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<ReviewDto>> GetReview([FromRoute] Guid id)
+        {
+            var review = await _context.Review.
+                Where(r => r.Id == id)
+                .Select(r => new ReviewDto
+                {
+                    Id = r.Id,
+                    ReviewerName = r.ReviewerName,
+                    Comment = r.Comment,
+                    Rating = r.Rating
+                })
+                .FirstOrDefaultAsync();
+
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(review);
+        }
+
+
+        // POST: api/reviews
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<ReviewDto>> PostReview(ReviewCreateDto createReviewDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var review = new Review
+            {
+                ReviewerName = createReviewDto.ReviewerName,
+                Comment = createReviewDto.Comment,
+                Rating = createReviewDto.Rating
+            };
+
+            _context.Review.Add(review);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetReview", new { id = review.Id }, review);
+        }
+
+
+        // PUT: api/Reviews/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> PutReview([FromRoute] Guid id, [FromBody] ReviewPutUpdateDto updateReviewDto)
+        {
+            var review = await _context.Review
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (review is null) return NotFound();
+
+            review.ReviewerName = updateReviewDto.ReviewerName;
+            review.Comment = updateReviewDto.Comment;
+            review.Rating = updateReviewDto.Rating;
+
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReviewExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+
+        // DELETE: api/Reviews/5
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteReview([FromRoute] Guid id)
+        {
+            var review = await _context.Review.FindAsync(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            _context.Review.Remove(review);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool ReviewExists(Guid id)
+        {
+            return _context.Review.Any(e => e.Id == id);
+        }
+    }
+}
