@@ -30,23 +30,5 @@ namespace MovieApi.Models.DTOs.MovieDtos
 
         [Range(0, int.MaxValue)]
         public int Budget { get; set; }
-
-        [Required]
-        public string ActorFirstName { get; set; } = null!;
-
-        [Required]
-        public string ActorLastName { get; set; } = null!;
-
-        [Required]
-        public int ActorBirthYear { get; set; }
-
-        [Required]
-        public string ReviewReviewerName { get; set; } = null!;
-
-        [Required]
-        public string ReviewComment { get; set; } = null!;
-
-        [Required]
-        public string ReviewRating { get; set; } = null!;
     }
 }

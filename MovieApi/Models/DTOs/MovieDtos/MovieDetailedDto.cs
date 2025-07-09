@@ -3,7 +3,7 @@ using MovieApi.Models.DTOs.ReviewDtos;
 
 namespace MovieApi.Models.DTOs.MovieDtos
 {
-    public class MovieDetailDto
+    public class MovieDetailedDto
     {
         public string Title { get; set; } = null!;
         public int Year { get; set; }
