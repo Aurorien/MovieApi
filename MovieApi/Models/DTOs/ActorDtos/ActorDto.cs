@@ -1,4 +1,6 @@
-﻿namespace MovieApi.Models.DTOs
+﻿using MovieApi.Models.DTOs.MovieDtos;
+
+namespace MovieApi.Models.DTOs.ActorDtos
 {
     public class ActorDto
     {
