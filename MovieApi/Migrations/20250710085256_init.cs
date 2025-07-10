@@ -14,9 +14,9 @@ namespace MovieApi.Migrations
                 name: "Actor",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BirthYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -28,12 +28,11 @@ namespace MovieApi.Migrations
                 name: "Movie",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     Genre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Duration = table.Column<int>(type: "int", nullable: false)
+                    DurationInMinutes = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,8 +43,8 @@ namespace MovieApi.Migrations
                 name: "ActorMovie",
                 columns: table => new
                 {
-                    ActorsId = table.Column<int>(type: "int", nullable: false),
-                    MoviesId = table.Column<int>(type: "int", nullable: false)
+                    ActorsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MoviesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,12 +67,11 @@ namespace MovieApi.Migrations
                 name: "MovieDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Synopsis = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Budget = table.Column<int>(type: "int", nullable: false),
-                    MovieId = table.Column<int>(type: "int", nullable: false)
+                    MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,12 +88,11 @@ namespace MovieApi.Migrations
                 name: "Review",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReviewerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
-                    MovieId = table.Column<int>(type: "int", nullable: false)
+                    MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,12 +114,12 @@ namespace MovieApi.Migrations
                 name: "IX_MovieDetails_MovieId",
                 table: "MovieDetails",
                 column: "MovieId",
-                unique: true); // <-- This makes it 1:1
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Review_MovieId",
                 table: "Review",
-                column: "MovieId"); // <-- No 'unique: true' makes it 1:n
+                column: "MovieId");
         }
 
         /// <inheritdoc />
