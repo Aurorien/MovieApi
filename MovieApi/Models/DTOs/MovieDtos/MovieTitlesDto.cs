@@ -1,0 +1,8 @@
+﻿namespace MovieApi.Models.DTOs.MovieDtos
+{
+    public class MovieTitlesDto
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; } = null!;
+    }
+}

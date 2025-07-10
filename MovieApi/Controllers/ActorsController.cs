@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
 using MovieApi.Models.DTOs.ActorDtos;
+using MovieApi.Models.DTOs.MovieDtos;
 using MovieApi.Models.Entities;
 
 namespace MovieApi.Controllers
@@ -26,7 +27,12 @@ namespace MovieApi.Controllers
                 {
                     Id = a.Id,
                     FullName = a.FullName,
-                    BirthYear = a.BirthYear
+                    BirthYear = a.BirthYear,
+                    MovieTitles = a.Movies.Select(m => new MovieTitlesDto
+                    {
+                        Id = m.Id,
+                        Title = m.Title,
+                    }),
                 })
                 .ToListAsync();
 
@@ -44,7 +50,12 @@ namespace MovieApi.Controllers
                 {
                     Id = a.Id,
                     FullName = a.FullName,
-                    BirthYear = a.BirthYear
+                    BirthYear = a.BirthYear,
+                    MovieTitles = a.Movies.Select(m => new MovieTitlesDto
+                    {
+                        Id = m.Id,
+                        Title = m.Title,
+                    }),
                 })
                 .FirstOrDefaultAsync();
 
@@ -75,7 +86,19 @@ namespace MovieApi.Controllers
             _context.Actor.Add(actor);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetActor", new { id = actor.Id }, actor);
+            var actorDto = new ActorDto
+            {
+                Id = actor.Id,
+                FullName = actor.FullName,
+                BirthYear = actor.BirthYear,
+                MovieTitles = actor.Movies.Select(m => new MovieTitlesDto
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                }),
+            };
+
+            return CreatedAtAction("GetActor", new { id = actorDto.Id }, actorDto);
         }
 
 

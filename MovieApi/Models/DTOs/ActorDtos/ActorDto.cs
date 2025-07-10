@@ -7,6 +7,6 @@ namespace MovieApi.Models.DTOs.ActorDtos
         public Guid Id { get; set; }
         public string FullName { get; set; } = null!;
         public int BirthYear { get; set; }
-        public IEnumerable<MovieDto> Movies { get; set; } = Enumerable.Empty<MovieDto>();
+        public IEnumerable<MovieTitlesDto> MovieTitles { get; set; } = Enumerable.Empty<MovieTitlesDto>();
     }
 }
