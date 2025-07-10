@@ -81,7 +81,15 @@ namespace MovieApi.Controllers
             _context.Review.Add(review);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReview", new { id = review.Id }, review);
+            var reviewDto = new ReviewDto
+            {
+                Id = review.Id,
+                ReviewerName = review.ReviewerName,
+                Comment = review.Comment,
+                Rating = review.Rating
+            };
+
+            return CreatedAtAction("GetReview", new { id = reviewDto.Id }, reviewDto);
         }
 
 

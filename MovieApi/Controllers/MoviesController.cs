@@ -86,7 +86,12 @@ namespace MovieApi.Controllers
                     {
                         Id = a.Id,
                         FullName = a.FullName,
-                        BirthYear = a.BirthYear
+                        BirthYear = a.BirthYear,
+                        MovieTitles = a.Movies.Select(m => new MovieTitlesDto
+                        {
+                            Id = m.Id,
+                            Title = m.Title,
+                        }),
                     }),
                     Reviews = m.Reviews.Select(r => new ReviewDto
                     {
@@ -138,7 +143,7 @@ namespace MovieApi.Controllers
                 MovieDetailsLanguage = movie.MovieDetails.Language
             };
 
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movieDto);
+            return CreatedAtAction("GetMovie", new { id = movieDto.Id }, movieDto);
         }
 
 
