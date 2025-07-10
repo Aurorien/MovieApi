@@ -20,6 +20,7 @@ namespace MovieApi.Controllers
 
         // GET: api/actors
         [HttpGet("api/actors")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ActorDto>>> GetActor()
         {
             var actorDtos = await _context.Actor
@@ -36,12 +37,15 @@ namespace MovieApi.Controllers
                 })
                 .ToListAsync();
 
+
             return Ok(actorDtos);
         }
 
 
         // GET: api/actors/5
         [HttpGet("api/actors{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Actor>> GetActor([FromRoute] Guid id)
         {
             var actorDto = await _context.Actor
@@ -71,6 +75,8 @@ namespace MovieApi.Controllers
         // POST: api/actors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("api/actors")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ActorDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ActorDto>> PostActor([FromBody] ActorCreateDto createActorDto)
         {
             if (!ModelState.IsValid)
@@ -105,10 +111,11 @@ namespace MovieApi.Controllers
         // POST: api/movies/5/actors/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("api/movies/{movieId}/actors/{actorId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PostActorToMovie([FromRoute] Guid movieId, [FromRoute] Guid actorId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == movieId);
             if (movie == null) return NotFound("Movie not found");
@@ -129,8 +136,14 @@ namespace MovieApi.Controllers
         // PUT: api/actors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("api/actors{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutActor([FromRoute] Guid id, [FromBody] ActorPutUpdateDto updateActorDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var actor = await _context.Actor.FirstOrDefaultAsync(a => a.Id == id);
 
             if (actor is null) return NotFound();

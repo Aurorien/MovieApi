@@ -22,6 +22,7 @@ namespace MovieApi.Controllers
 
         // GET: api/movies
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
             var movieDtos = await _context.Movie
@@ -42,6 +43,8 @@ namespace MovieApi.Controllers
 
         // GET: api/movies/5
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MovieDto>> GetMovie([FromRoute] Guid id)
         {
             var movieDto = await _context.Movie
@@ -68,6 +71,8 @@ namespace MovieApi.Controllers
 
         // GET: api/movies/5/detailed
         [HttpGet("{id:guid}/detailed")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MovieDetailedDto>> GetMovieDetailed([FromRoute] Guid id)
         {
             var movieDetailed = await _context.Movie
@@ -113,8 +118,13 @@ namespace MovieApi.Controllers
         // POST: api/movies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MovieDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<MovieDto>> PostMovie([FromBody] MovieCreateDto createMovieDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var movie = new Movie
             {
                 Title = createMovieDto.Title,
@@ -150,8 +160,14 @@ namespace MovieApi.Controllers
         // PUT: api/movies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutMovie([FromRoute] Guid id, [FromBody] MoviePutUpdateDto updateMovieDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var movie = await _context.Movie
                    .Include(m => m.MovieDetails)
                    .Include(m => m.Actors)
@@ -189,6 +205,8 @@ namespace MovieApi.Controllers
 
         // DELETE: api/movies/5
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteMovie([FromRoute] Guid id)
         {
             var movie = await _context.Movie.FindAsync(id);

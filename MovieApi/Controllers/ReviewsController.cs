@@ -20,6 +20,7 @@ namespace MovieApi.Controllers
 
         // GET: api/Reviews
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews()
         {
 
@@ -40,6 +41,8 @@ namespace MovieApi.Controllers
 
         // GET: api/Reviews/5
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ReviewDto>> GetReview([FromRoute] Guid id)
         {
             var reviewDto = await _context.Review
@@ -66,6 +69,8 @@ namespace MovieApi.Controllers
         // POST: api/reviews
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReviewDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ReviewDto>> PostReview([FromBody] ReviewCreateDto createReviewDto)
         {
             if (!ModelState.IsValid)
@@ -96,8 +101,14 @@ namespace MovieApi.Controllers
         // PUT: api/Reviews/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutReview([FromRoute] Guid id, [FromBody] ReviewPutUpdateDto updateReviewDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var review = await _context.Review.FirstOrDefaultAsync(r => r.Id == id);
 
             if (review is null) return NotFound();
@@ -129,6 +140,8 @@ namespace MovieApi.Controllers
 
         // DELETE: api/Reviews/5
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteReview([FromRoute] Guid id)
         {
             var review = await _context.Review.FindAsync(id);
