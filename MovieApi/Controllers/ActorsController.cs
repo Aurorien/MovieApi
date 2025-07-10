@@ -82,7 +82,7 @@ namespace MovieApi.Controllers
         // POST: api/movies/5/actors/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("api/movies/{movieId}/actors/{actorId}")]
-        public async Task<ActionResult<ActorDto>> PostActorToMovie([FromBody] ActorCreateDto createActorDto, [FromRoute] Guid movieId, [FromRoute] Guid actorId)
+        public async Task<IActionResult> PostActorToMovie([FromRoute] Guid movieId, [FromRoute] Guid actorId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
