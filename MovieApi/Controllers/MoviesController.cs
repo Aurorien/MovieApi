@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
+using MovieApi.Models.DTOs.ActorDtos;
 using MovieApi.Models.DTOs.MovieDtos;
+using MovieApi.Models.DTOs.ReviewDtos;
 using MovieApi.Models.Entities;
 
 namespace MovieApi.Controllers
@@ -79,7 +81,20 @@ namespace MovieApi.Controllers
                     DurationInMinutes = m.DurationInMinutes,
                     Synopsis = m.MovieDetails.Synopsis,
                     Language = m.MovieDetails.Language,
-                    Budget = m.MovieDetails.Budget
+                    Budget = m.MovieDetails.Budget,
+                    Actors = m.Actors.Select(a => new ActorDto
+                    {
+                        Id = a.Id,
+                        FullName = a.FullName,
+                        BirthYear = a.BirthYear
+                    }),
+                    Reviews = m.Reviews.Select(r => new ReviewDto
+                    {
+                        Id = r.Id,
+                        ReviewerName = r.ReviewerName,
+                        Comment = r.Comment,
+                        Rating = r.Rating
+                    })
                 })
                 .FirstOrDefaultAsync();
 
