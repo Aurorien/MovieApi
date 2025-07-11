@@ -20,7 +20,8 @@ namespace MovieApi.Data
 
             await context.SaveChangesAsync();
 
-            AssignActorsToMovies(movies, actors);
+            var movieActors = GenerateMovieActors(movies, actors);
+            await context.AddRangeAsync(movieActors);
 
             var reviews = GenerateReviews(movies, 50);
             await context.AddRangeAsync(reviews);
@@ -28,20 +29,32 @@ namespace MovieApi.Data
             await context.SaveChangesAsync();
         }
 
-
-        private static void AssignActorsToMovies(IEnumerable<Movie> movies, List<Actor> actors)
+        private static IEnumerable<MovieActor> GenerateMovieActors(IEnumerable<Movie> movies, IEnumerable<Actor> actors)
         {
+            var movieActors = new List<MovieActor>();
+
             foreach (var movie in movies)
             {
                 // Randomly assigning 1-3 actors to each movie
-                var numberOfActors = faker.Random.Int(1, Math.Min(3, actors.Count));
+                var numberOfActors = faker.Random.Int(1, Math.Min(3, actors.Count()));
                 var selectedActors = faker.PickRandom(actors, numberOfActors);
 
                 foreach (var actor in selectedActors)
                 {
-                    movie.Actors.Add(actor);
+                    var role = faker.Name.JobTitle();
+
+                    var movieActor = new MovieActor
+                    {
+                        Actor = actor,
+                        Movie = movie,
+                        Role = role
+                    };
+
+                    movieActors.Add(movieActor);
                 }
             }
+
+            return movieActors;
         }
 
 

@@ -7,6 +7,6 @@
         public string LastName { get; set; } = null!;
         public string FullName => $"{FirstName} {LastName}";
         public int BirthYear { get; set; }
-        public ICollection<Movie> Movies { get; set; } = new List<Movie>(); // N:M - Movie:Actor
+        public ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
     }
 }

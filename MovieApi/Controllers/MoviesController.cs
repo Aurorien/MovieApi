@@ -87,15 +87,16 @@ namespace MovieApi.Controllers
                     Synopsis = m.MovieDetails.Synopsis,
                     Language = m.MovieDetails.Language,
                     Budget = m.MovieDetails.Budget,
-                    Actors = m.Actors.Select(a => new ActorDto
+                    Actors = m.MovieActors.Select(ma => new ActorDto
                     {
-                        Id = a.Id,
-                        FullName = a.FullName,
-                        BirthYear = a.BirthYear,
-                        MovieTitles = a.Movies.Select(m => new MovieTitlesDto
+                        Id = ma.Actor.Id,
+                        FullName = ma.Actor.FullName,
+                        BirthYear = ma.Actor.BirthYear,
+                        MovieTitles = ma.Actor.MovieActors.Select(ma => new MovieTitlesDto
                         {
-                            Id = m.Id,
-                            Title = m.Title,
+                            Id = ma.Movie.Id,
+                            Title = ma.Movie.Title,
+                            Role = ma.Role
                         }),
                     }),
                     Reviews = m.Reviews.Select(r => new ReviewDto
@@ -170,7 +171,8 @@ namespace MovieApi.Controllers
 
             var movie = await _context.Movie
                    .Include(m => m.MovieDetails)
-                   .Include(m => m.Actors)
+                   .Include(m => m.MovieActors)
+                        .ThenInclude(ma => ma.Actor)
                    .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movie is null) return NotFound();

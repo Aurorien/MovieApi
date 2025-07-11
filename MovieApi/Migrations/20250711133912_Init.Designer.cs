@@ -12,7 +12,7 @@ using MovieApi.Data;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieApiContext))]
-    [Migration("20250710085256_init")]
+    [Migration("20250711133912_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -24,21 +24,6 @@ namespace MovieApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ActorMovie", b =>
-                {
-                    b.Property<Guid>("ActorsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MoviesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ActorsId", "MoviesId");
-
-                    b.HasIndex("MoviesId");
-
-                    b.ToTable("ActorMovie");
-                });
 
             modelBuilder.Entity("MovieApi.Models.Entities.Actor", b =>
                 {
@@ -85,6 +70,25 @@ namespace MovieApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Movie");
+                });
+
+            modelBuilder.Entity("MovieApi.Models.Entities.MovieActor", b =>
+                {
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ActorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MovieId", "ActorId");
+
+                    b.HasIndex("ActorId");
+
+                    b.ToTable("MovieActor");
                 });
 
             modelBuilder.Entity("MovieApi.Models.Entities.MovieDetails", b =>
@@ -142,19 +146,23 @@ namespace MovieApi.Migrations
                     b.ToTable("Review");
                 });
 
-            modelBuilder.Entity("ActorMovie", b =>
+            modelBuilder.Entity("MovieApi.Models.Entities.MovieActor", b =>
                 {
-                    b.HasOne("MovieApi.Models.Entities.Actor", null)
-                        .WithMany()
-                        .HasForeignKey("ActorsId")
+                    b.HasOne("MovieApi.Models.Entities.Actor", "Actor")
+                        .WithMany("MovieActors")
+                        .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieApi.Models.Entities.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MoviesId")
+                    b.HasOne("MovieApi.Models.Entities.Movie", "Movie")
+                        .WithMany("MovieActors")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Actor");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("MovieApi.Models.Entities.MovieDetails", b =>
@@ -179,8 +187,15 @@ namespace MovieApi.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("MovieApi.Models.Entities.Actor", b =>
+                {
+                    b.Navigation("MovieActors");
+                });
+
             modelBuilder.Entity("MovieApi.Models.Entities.Movie", b =>
                 {
+                    b.Navigation("MovieActors");
+
                     b.Navigation("MovieDetails")
                         .IsRequired();
 

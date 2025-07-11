@@ -29,10 +29,11 @@ namespace MovieApi.Controllers
                     Id = a.Id,
                     FullName = a.FullName,
                     BirthYear = a.BirthYear,
-                    MovieTitles = a.Movies.Select(m => new MovieTitlesDto
+                    MovieTitles = a.MovieActors.Select(ma => new MovieTitlesDto
                     {
-                        Id = m.Id,
-                        Title = m.Title,
+                        Id = ma.Movie.Id,
+                        Title = ma.Movie.Title,
+                        Role = ma.Role
                     }),
                 })
                 .ToListAsync();
@@ -55,10 +56,11 @@ namespace MovieApi.Controllers
                     Id = a.Id,
                     FullName = a.FullName,
                     BirthYear = a.BirthYear,
-                    MovieTitles = a.Movies.Select(m => new MovieTitlesDto
+                    MovieTitles = a.MovieActors.Select(ma => new MovieTitlesDto
                     {
-                        Id = m.Id,
-                        Title = m.Title,
+                        Id = ma.Movie.Id,
+                        Title = ma.Movie.Title,
+                        Role = ma.Role
                     }),
                 })
                 .FirstOrDefaultAsync();
@@ -97,10 +99,11 @@ namespace MovieApi.Controllers
                 Id = actor.Id,
                 FullName = actor.FullName,
                 BirthYear = actor.BirthYear,
-                MovieTitles = actor.Movies.Select(m => new MovieTitlesDto
+                MovieTitles = actor.MovieActors.Select(ma => new MovieTitlesDto
                 {
-                    Id = m.Id,
-                    Title = m.Title,
+                    Id = ma.Movie.Id,
+                    Title = ma.Movie.Title,
+                    Role = ma.Role
                 }),
             };
 
@@ -110,27 +113,38 @@ namespace MovieApi.Controllers
 
         // POST: api/movies/5/actors/1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("api/movies/{movieId}/actors/{actorId}")]
+        [HttpPost("api/movies/{movieId}/actors")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PostActorToMovie([FromRoute] Guid movieId, [FromRoute] Guid actorId)
+        public async Task<IActionResult> PostActorToMovie([FromRoute] Guid movieId, [FromBody] MovieActorCreateDto maCreateDto)
         {
 
             var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == movieId);
             if (movie == null) return NotFound("Movie not found");
 
-            var actor = await _context.Actor.FirstOrDefaultAsync(m => m.Id == actorId);
+            var actor = await _context.Actor.FirstOrDefaultAsync(m => m.Id == maCreateDto.ActorId);
             if (actor == null) return NotFound("Actor not found");
 
-            if (movie.Actors.Any(a => a.Id == actorId))
-                return BadRequest("Actor is already in this movie");
+            var isActorAlreadyInMovie = await _context.Set<MovieActor>()
+                                                      .AnyAsync(ma => ma.MovieId == movieId && ma.ActorId == maCreateDto.ActorId);
 
-            movie.Actors.Add(actor);
+            if (isActorAlreadyInMovie)
+                return BadRequest("Actor is already assigned to this movie");
+
+            var movieActor = new MovieActor
+            {
+                MovieId = movieId,
+                ActorId = maCreateDto.ActorId,
+                Role = maCreateDto.Role
+            };
+
+            _context.Set<MovieActor>().Add(movieActor);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
 
         // PUT: api/actors/5
