@@ -13,5 +13,12 @@ namespace MovieApi.Data
         public DbSet<Movie> Movie { get; set; } = default!;
         public DbSet<MovieApi.Models.Entities.Actor> Actor { get; set; } = default!;
         public DbSet<MovieApi.Models.Entities.Review> Review { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<MovieActor>().HasKey(ma => new { ma.MovieId, ma.ActorId });
+        }
     }
 }
